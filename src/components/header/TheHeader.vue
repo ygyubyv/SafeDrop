@@ -13,9 +13,9 @@
       <div>
         <router-link :to="{ name: 'login' }">
           <button
-            class="w-auto h-auto bg-white text-black p-2 rounded-lg cursor-pointer hover:scale-105"
+            class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
           >
-            <span class="mr-2">Login</span>
+            <span class="mr-1 md:mr-2">Login</span>
             <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
           </button>
         </router-link>
