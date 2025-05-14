@@ -11,7 +11,7 @@
 
       <div class="flex flex-col space-y-3 sm:space-y-4">
         <button
-          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center"
+          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('email')"
         >
           <font-awesome-icon icon="fa-solid fa-envelope" class="mr-2 text-black" />
@@ -19,7 +19,7 @@
         </button>
 
         <button
-          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center"
+          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('google')"
         >
           <font-awesome-icon icon="fa-brands fa-google" class="mr-2 text-black" />
@@ -27,7 +27,7 @@
         </button>
 
         <button
-          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center"
+          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('github')"
         >
           <font-awesome-icon icon="fa-brands fa-github" class="mr-2 text-black" />
@@ -35,7 +35,7 @@
         </button>
 
         <button
-          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center"
+          class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('microsoft')"
         >
           <font-awesome-icon icon="fa-brands fa-microsoft" class="mr-2 text-black" />
@@ -47,8 +47,13 @@
 </template>
 
 <script setup lang="ts">
-const handleLogin = (method: string) => {
+import { useAuth } from "@/composables/useAuth";
+
+const { login } = useAuth();
+
+const handleLogin = async (method: string) => {
   console.log(`Авторизація через ${method}`);
+  await login();
 };
 </script>
 
