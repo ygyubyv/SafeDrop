@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import { myMSALObj } from "@/msal/msalConfig";
+import { myMSALObj } from "../azure/azure_msal/msalConfig";
 
 const isAuthenticated = ref(false);
 

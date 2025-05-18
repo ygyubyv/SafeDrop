@@ -11,7 +11,7 @@ import { onMounted } from "vue";
 import { RouterView } from "vue-router";
 
 import { useAuth } from "./composables/useAuth";
-import { myMSALObj } from "./msal/msalConfig";
+import { myMSALObj } from "./azure/azure_msal/msalConfig";
 
 import TheHeader from "./components/header/TheHeader.vue";
 import TheFooter from "./components/footer/TheFooter.vue";

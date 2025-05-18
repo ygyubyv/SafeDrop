@@ -10,24 +10,35 @@
           />
         </router-link>
       </div>
-      <div>
-        <router-link v-if="!isAuthenticated" :to="{ name: 'login' }">
+
+      <div class="flex items-center justify-center gap-2">
+        <div>
+          <router-link :to="{ name: 'create' }">
+            <span class="block mr-1 md:mr-3 text-md md:text-lg hover:scale-110 glow-white-animated"
+              >Create</span
+            >
+          </router-link>
+        </div>
+
+        <div>
+          <router-link v-if="!isAuthenticated" :to="{ name: 'login' }">
+            <button
+              class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
+            >
+              <span class="mr-1 md:mr-2">Login</span>
+              <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
+            </button>
+          </router-link>
+
           <button
+            v-else
+            @click="logout"
             class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
           >
-            <span class="mr-1 md:mr-2">Login</span>
+            <span class="mr-1 md:mr-2">Logout</span>
             <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
           </button>
-        </router-link>
-
-        <button
-          v-else
-          @click="logout"
-          class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
-        >
-          <span class="mr-1 md:mr-2">Logout</span>
-          <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
-        </button>
+        </div>
       </div>
     </div>
   </header>
@@ -38,3 +49,23 @@ import { useAuth } from "@/composables/useAuth";
 
 const { isAuthenticated, logout } = useAuth();
 </script>
+
+<style scoped>
+.glow-white-animated {
+  color: #fff;
+  text-shadow: 0 0 20px #fff, 0 0 40px #fff, 0 0 60px #fff, 0 0 80px #fff, 0 0 100px #fff,
+    0 0 120px #fff, 0 0 140px #fff;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
+      0 0 60px #fff, 0 0 70px #fff;
+  }
+  100% {
+    text-shadow: 0 0 30px #fff, 0 0 60px #fff, 0 0 90px #fff, 0 0 120px #fff, 0 0 150px #fff,
+      0 0 180px #fff, 0 0 210px #fff;
+  }
+}
+</style>
