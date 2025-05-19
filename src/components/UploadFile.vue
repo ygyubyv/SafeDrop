@@ -11,9 +11,9 @@
       </label>
       <input id="fileInput" type="file" class="hidden" @change="loadFile" />
 
-      <div class="flex flex-col items-center gap-2" v-if="processing">
+      <div class="flex flex-col items-center gap-2">
         <h2 class="text-white">{{ fileName }}</h2>
-        <input type="range" v-model="progressValue" />
+        <base-spinner v-if="isLoading" />
       </div>
 
       <p class="text-sm text-gray-400 text-center">
@@ -25,10 +25,10 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { validateFileName } from "@/plugins/helpers";
 
-const processing = ref(false);
 const fileName = ref("");
-const progressValue = ref(0);
+const isLoading = ref(false);
 
 const loadFile = (event: Event): void => {
   const input = event.target as HTMLInputElement;
@@ -38,7 +38,7 @@ const loadFile = (event: Event): void => {
     return;
   }
 
-  processing.value = true;
+  isLoading.value = true;
 
   const file = input.files[0];
   const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024;
@@ -58,25 +58,25 @@ const loadFile = (event: Event): void => {
     if (!reader.result) {
       return;
     }
-    const base64 = (reader.result as string).split("base64")[2];
-    const response = await fetch("http://localhost:7071/api/uploadFile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ fileName: fileName.value, fileContentBase64: base64 }),
+
+    // Розбити
+    const responseSas = await fetch(
+      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(fileName.value)}`
+    );
+
+    const { url } = await responseSas.json();
+
+    // розбити
+    const responseBlob = await fetch(url, {
+      method: "PUT",
+      headers: { "x-ms-blob-type": "BlockBlob" },
+      body: file,
     });
 
-    const data = await response.json();
-    console.log(data);
+    // const blobData = await responseBlob.json();
 
     // User message
-  };
-
-  reader.onprogress = (event: ProgressEvent<FileReader>) => {
-    if (event.lengthComputable) {
-      progressValue.value = (event.loaded / event.total) * 100;
-    }
+    isLoading.value = false;
   };
 
   reader.onerror = () => {
