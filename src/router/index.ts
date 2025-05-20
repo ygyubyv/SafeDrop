@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import MainView from "@/views/MainView.vue";
 import LoginView from "@/views/LoginView.vue";
 import CreateView from "@/views/CreateView.vue";
+import LoadView from "@/views/LoadView.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,6 +20,11 @@ const routes: RouteRecordRaw[] = [
     path: "/create",
     name: "create",
     component: CreateView,
+  },
+  {
+    path: "/load",
+    name: "load",
+    component: LoadView,
   },
 ];
 

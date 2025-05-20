@@ -59,7 +59,7 @@ const loadFile = (event: Event): void => {
       return;
     }
 
-    const url = await loadSasToken(fileName.value);
+    const url = await loadSasToken(fileName.value, file.size);
     const response = await uploadBlob(url, file);
 
     showNotification("success", "Loaded successfully");

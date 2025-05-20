@@ -9,10 +9,18 @@ export const validateFileName = (fileName: string): string => {
   return `${name}_${Date.now()}${extension}`;
 };
 
-export const loadSasToken = async (fileName: string) => {
+export const formatFileSize = (size: number): string => {
+  const kylobytes = size / 1024;
+  const megabytes = kylobytes / 1024;
+  return megabytes >= 1 ? `${megabytes.toFixed(2)} MB` : `${kylobytes.toFixed(2)} KB`;
+};
+
+export const loadSasToken = async (fileName: string, size: number) => {
   try {
     const response = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(fileName)}`
+      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(
+        fileName
+      )}&size=${size}`
     );
 
     const { url } = await response.json();

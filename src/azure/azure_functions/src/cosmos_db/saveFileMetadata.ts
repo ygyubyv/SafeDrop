@@ -3,8 +3,11 @@ import { db } from "./cosmosClient";
 interface FileMetadata {
   id: string;
   fileName: string;
+  size: number;
   url: string;
   uploadedAt: number;
+  expiresAt: number;
+  ttl: number;
 }
 
 export async function saveFileMetadata(metadata: FileMetadata) {

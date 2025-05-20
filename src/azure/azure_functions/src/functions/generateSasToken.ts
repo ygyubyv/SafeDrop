@@ -7,16 +7,25 @@ import {
 } from "@azure/storage-blob";
 import { v4 as uuidv4 } from "uuid";
 
-const id = uuidv4();
-
 import { saveFileMetadata } from "../cosmos_db/saveFileMetadata";
+
+const id = uuidv4();
 
 export async function generateSasToken(req: HttpRequest): Promise<HttpResponseInit> {
   const fileName = req.query.get("filename");
+  const size = +req.query.get("size");
+
   if (!fileName) {
     return {
       status: 400,
       body: "Missing filename query parameter",
+    };
+  }
+
+  if (!size) {
+    return {
+      status: 400,
+      body: "Missing size query parameter",
     };
   }
 
@@ -43,8 +52,11 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
   saveFileMetadata({
     id,
     fileName,
+    size,
     url,
     uploadedAt: Date.now(),
+    expiresAt: Date.now() + 1 * 1000 * 60 * 60 * 24,
+    ttl: 86400,
   });
 
   return {
