@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { validateFileName } from "@/plugins/helpers";
+import { loadSasToken, uploadBlob } from "@/plugins/helpers";
 
 const fileName = ref("");
 const isLoading = ref(false);
@@ -43,12 +43,12 @@ const loadFile = (event: Event): void => {
   const file = input.files[0];
   const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024;
 
-  fileName.value = file.name;
-
   if (file.size > MAX_FILE_SIZE) {
     // User message
     return;
   }
+
+  fileName.value = file.name;
 
   const reader = new FileReader();
 
@@ -59,21 +59,8 @@ const loadFile = (event: Event): void => {
       return;
     }
 
-    // Розбити
-    const responseSas = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(fileName.value)}`
-    );
-
-    const { url } = await responseSas.json();
-
-    // розбити
-    const responseBlob = await fetch(url, {
-      method: "PUT",
-      headers: { "x-ms-blob-type": "BlockBlob" },
-      body: file,
-    });
-
-    // const blobData = await responseBlob.json();
+    const url = await loadSasToken(fileName.value);
+    const response = await uploadBlob(url, file);
 
     // User message
     isLoading.value = false;
