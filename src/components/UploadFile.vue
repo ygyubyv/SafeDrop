@@ -26,6 +26,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { loadSasToken, uploadBlob } from "@/plugins/helpers";
+import { showNotification } from "@/plugins/showNotification";
 
 const fileName = ref("");
 const isLoading = ref(false);
@@ -34,7 +35,6 @@ const loadFile = (event: Event): void => {
   const input = event.target as HTMLInputElement;
 
   if (!input.files || !input.files.length) {
-    // User message
     return;
   }
 
@@ -44,7 +44,6 @@ const loadFile = (event: Event): void => {
   const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024;
 
   if (file.size > MAX_FILE_SIZE) {
-    // User message
     return;
   }
 
@@ -56,18 +55,19 @@ const loadFile = (event: Event): void => {
 
   reader.onload = async () => {
     if (!reader.result) {
+      showNotification("error", "Cannot read your file");
       return;
     }
 
     const url = await loadSasToken(fileName.value);
     const response = await uploadBlob(url, file);
 
-    // User message
+    showNotification("success", "Loaded successfully");
     isLoading.value = false;
   };
 
   reader.onerror = () => {
-    // User message
+    showNotification("error", `Error reading file, ${reader.error}`);
     console.error(reader.error);
   };
 };
