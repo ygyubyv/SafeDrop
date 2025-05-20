@@ -38,8 +38,6 @@ const loadFile = (event: Event): void => {
     return;
   }
 
-  isLoading.value = true;
-
   const file = input.files[0];
   const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024;
 
@@ -48,6 +46,8 @@ const loadFile = (event: Event): void => {
   }
 
   fileName.value = file.name;
+
+  isLoading.value = true;
 
   const reader = new FileReader();
 
@@ -63,6 +63,7 @@ const loadFile = (event: Event): void => {
     const response = await uploadBlob(url, file);
 
     showNotification("success", "Loaded successfully");
+
     isLoading.value = false;
   };
 

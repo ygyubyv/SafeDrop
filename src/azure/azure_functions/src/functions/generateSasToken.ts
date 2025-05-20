@@ -5,6 +5,11 @@ import {
   SASProtocol,
   StorageSharedKeyCredential,
 } from "@azure/storage-blob";
+import { v4 as uuidv4 } from "uuid";
+
+const id = uuidv4();
+
+import { saveFileMetadata } from "../cosmos_db/saveFileMetadata";
 
 export async function generateSasToken(req: HttpRequest): Promise<HttpResponseInit> {
   const fileName = req.query.get("filename");
@@ -34,6 +39,13 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
   ).toString();
 
   const url = `https://${accountName}.blob.core.windows.net/${containerName}/${fileName}?${sasToken}`;
+
+  saveFileMetadata({
+    id,
+    fileName,
+    url,
+    uploadedAt: Date.now(),
+  });
 
   return {
     status: 200,
