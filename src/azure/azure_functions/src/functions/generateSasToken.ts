@@ -6,40 +6,22 @@ import {
   StorageSharedKeyCredential,
 } from "@azure/storage-blob";
 import { v4 as uuidv4 } from "uuid";
-
 import { saveFileMetadata } from "../cosmos_db/saveFileMetadata";
 
-const id = uuidv4();
-
-export async function generateSasToken(req: HttpRequest): Promise<HttpResponseInit> {
-  const fileName = req.query.get("filename");
-  const size = +req.query.get("size");
-
-  if (!fileName) {
-    return {
-      status: 400,
-      body: "Missing filename query parameter",
-    };
-  }
-
-  if (!size) {
-    return {
-      status: 400,
-      body: "Missing size query parameter",
-    };
-  }
-
-  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
-  const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
-  const containerName = "safe-drop";
-
+const generateSasUrl = (
+  accountName: string,
+  accountKey: string,
+  containerName: string,
+  blobName: string,
+  permissions: string
+): string => {
   const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
 
   const sasToken = generateBlobSASQueryParameters(
     {
       containerName,
-      blobName: fileName,
-      permissions: BlobSASPermissions.parse("cw"),
+      blobName,
+      permissions: BlobSASPermissions.parse(permissions),
       startsOn: new Date(Date.now() - 1 * 60 * 1000),
       expiresOn: new Date(Date.now() + 15 * 60 * 1000),
       protocol: SASProtocol.Https,
@@ -47,17 +29,47 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
     sharedKeyCredential
   ).toString();
 
-  const url = `https://${accountName}.blob.core.windows.net/${containerName}/${fileName}?${sasToken}`;
+  return `https://${accountName}.blob.core.windows.net/${containerName}/${blobName}?${sasToken}`;
+};
 
-  saveFileMetadata({
-    id,
-    fileName,
-    size,
-    url,
-    uploadedAt: Date.now(),
-    expiresAt: Date.now() + 1 * 1000 * 60 * 60 * 24,
-    ttl: 86400,
-  });
+export async function generateSasToken(req: HttpRequest): Promise<HttpResponseInit> {
+  const fileName = req.query.get("filename");
+  const size = +(req.query.get("size") || 0);
+  const type = req.query.get("type") || "upload";
+
+  if (!fileName) {
+    return { status: 400, body: "Missing filename query parameter" };
+  }
+
+  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
+  const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
+  const containerName = "safe-drop";
+
+  let permissions = "";
+  if (type === "upload") {
+    if (!size) {
+      return { status: 400, body: "Missing size query parameter for upload" };
+    }
+    permissions = "cw";
+  } else if (type === "download") {
+    permissions = "r";
+  } else {
+    return { status: 400, body: "Invalid type query parameter (upload or download expected)" };
+  }
+
+  const url = generateSasUrl(accountName, accountKey, containerName, fileName, permissions);
+
+  if (type === "upload") {
+    const id = uuidv4();
+    await saveFileMetadata({
+      id,
+      fileName,
+      size,
+      uploadedAt: Date.now(),
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24,
+      ttl: 86400,
+    });
+  }
 
   return {
     status: 200,

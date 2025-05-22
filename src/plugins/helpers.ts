@@ -15,12 +15,27 @@ export const formatFileSize = (size: number): string => {
   return megabytes >= 1 ? `${megabytes.toFixed(2)} MB` : `${kylobytes.toFixed(2)} KB`;
 };
 
-export const loadSasToken = async (fileName: string, size: number) => {
+export const uploadSasToken = async (fileName: string, size: number) => {
   try {
     const response = await fetch(
       `http://localhost:7071/api/generateSasToken?filename=${validateFileName(
         fileName
-      )}&size=${size}`
+      )}&size=${size}&type=upload`
+    );
+
+    const { url } = await response.json();
+
+    return url;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const downloadSasToken = async (fileName: string) => {
+  try {
+    console.log(fileName);
+    const response = await fetch(
+      `http://localhost:7071/api/generateSasToken?filename=${fileName}&type=download`
     );
 
     const { url } = await response.json();

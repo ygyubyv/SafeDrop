@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
     component: CreateView,
   },
   {
-    path: "/load",
+    path: "/load/:id",
     name: "load",
     component: LoadView,
   },

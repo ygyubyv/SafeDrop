@@ -18,6 +18,7 @@
 
         <div
           class="mt-3 text-sm bg-white/10 text-white px-4 py-3 rounded-lg border border-white/20 flex items-center gap-2"
+          v-if="!isLoading"
         >
           <svg
             class="w-5 h-5 text-yellow-400"
@@ -37,11 +38,14 @@
             <strong class="text-white">{{ normalizeDate(file.expiresAt) }}</strong>
           </span>
         </div>
+
+        <base-spinner v-if="isLoading" />
       </div>
 
       <!-- Блок із даними про файл -->
       <div
         class="w-full bg-white text-black rounded-xl p-5 flex justify-between items-center shadow-md border border-gray-200"
+        v-if="!isLoading"
       >
         <div>
           <p class="text-lg font-medium truncate max-w-[300px]">
@@ -51,7 +55,8 @@
         </div>
 
         <button
-          class="px-6 py-2 bg-black text-white rounded-md hover:scale-105 transition-transform"
+          class="px-6 py-2 bg-black text-white rounded-md hover:scale-105 transition-transform cursor-pointer"
+          @click="downloadFile"
         >
           Завантажити файл
         </button>
@@ -61,14 +66,74 @@
 </template>
 
 <script setup lang="ts">
-import { formatFileSize } from "../plugins/helpers";
+import { onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+import { formatFileSize, downloadSasToken } from "../plugins/helpers";
 import { normalizeDate } from "@/plugins/normalizeDate";
+import type { FileMetadata } from "@/types/FileMetadata";
 
-const file = {
-  id: "f05bf2a3-2663-412b-9f4b-cf4e3c292a60",
-  fileName: "Знімок екрана (26)_1747770009636.png",
-  size: 21277,
-  expiresAt: 1747861116781,
-  url: "https://safedropfunctions.blob.core.windows.net/safe-drop/...",
+const route = useRoute();
+
+const fileId = route.params.id as string;
+
+const file = reactive<FileMetadata>({
+  fileName: "",
+  size: 0,
+  expiresAt: 0,
+  id: "",
+  url: "",
+});
+
+const isLoading = ref(false);
+
+const loadFileMetadata = async (fileId: string) => {
+  isLoading.value = true;
+  try {
+    const response = await fetch(`http://localhost:7071/api/getFileMetadata?id=${fileId}`);
+
+    if (!response.ok) {
+      throw new Error("Error: Cant fetch file metadata");
+    }
+
+    const data: FileMetadata = await response.json();
+
+    file.fileName = data.fileName;
+    file.size = data.size;
+    file.expiresAt = data.expiresAt;
+  } catch (error) {
+    console.error(error);
+  }
+  isLoading.value = false;
 };
+
+const downloadBlob = async (url: string) => {
+  try {
+    const response = await fetch(url);
+    return response.blob();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const downloadFile = async () => {
+  try {
+    const sasUrl = await downloadSasToken(file.fileName);
+    const blob = await downloadBlob(sasUrl);
+    const usersFile = new Blob([blob!]);
+    const url = URL.createObjectURL(usersFile);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file.fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(async () => {
+  await loadFileMetadata(fileId);
+});
 </script>

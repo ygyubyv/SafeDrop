@@ -20,7 +20,7 @@ export async function getFileMetadata(req: HttpRequest): Promise<HttpResponseIni
       };
     }
 
-    const { fileName, size, uploadedAt, url } = resource;
+    const { fileName, size, uploadedAt, expiresAt } = resource;
 
     return {
       status: 200,
@@ -29,7 +29,7 @@ export async function getFileMetadata(req: HttpRequest): Promise<HttpResponseIni
         fileName,
         size,
         uploadedAt,
-        url,
+        expiresAt,
       },
     };
   } catch (error) {
