@@ -9,7 +9,9 @@
         В цілях безпеки щоб продовжити треба ввійти в обліковий запис
       </p>
 
+      <!-- Блок провайдерів початок -->
       <div class="flex flex-col space-y-3 sm:space-y-4">
+        <!-- Email початок -->
         <button
           class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('email')"
@@ -17,7 +19,9 @@
           <font-awesome-icon icon="fa-solid fa-envelope" class="mr-2 text-black" />
           Вхід через пошту та пароль
         </button>
+        <!-- Email кінець -->
 
+        <!-- Google початок -->
         <button
           class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('google')"
@@ -25,7 +29,9 @@
           <font-awesome-icon icon="fa-brands fa-google" class="mr-2 text-black" />
           Вхід через Google
         </button>
+        <!-- Google кінець -->
 
+        <!-- GitHub початок -->
         <button
           class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('github')"
@@ -33,7 +39,9 @@
           <font-awesome-icon icon="fa-brands fa-github" class="mr-2 text-black" />
           Вхід через GitHub
         </button>
+        <!-- GitHub кінець -->
 
+        <!-- Microsoft початок -->
         <button
           class="login-button bg-white hover:bg-neutral-200 text-neutral-900 font-medium py-2 rounded-lg flex items-center justify-center cursor-pointer"
           @click="handleLogin('microsoft')"
@@ -41,7 +49,9 @@
           <font-awesome-icon icon="fa-brands fa-microsoft" class="mr-2 text-black" />
           Вхід через Microsoft
         </button>
+        <!-- Microsoft кінець -->
       </div>
+      <!-- Блок провайдерів кінець -->
     </div>
   </div>
 </template>
@@ -52,7 +62,6 @@ import { useAuth } from "@/composables/useAuth";
 const { login } = useAuth();
 
 const handleLogin = async (method: string) => {
-  console.log(`Авторизація через ${method}`);
   await login();
 };
 </script>

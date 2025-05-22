@@ -25,8 +25,8 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { uploadSasToken, uploadBlob } from "@/plugins/helpers";
-import { showNotification } from "@/plugins/showNotification";
+import { uploadSasToken, uploadBlob } from "../plugins/filesHelpers";
+import { showNotification } from "..//plugins/helpers";
 
 const fileName = ref("");
 const isLoading = ref(false);
@@ -60,7 +60,7 @@ const loadFile = (event: Event): void => {
     }
 
     const url = await uploadSasToken(fileName.value, file.size);
-    const response = await uploadBlob(url, file);
+    await uploadBlob(url, file);
 
     showNotification("success", "Loaded successfully");
 

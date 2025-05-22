@@ -1,10 +1,9 @@
 <template>
   <div class="flex items-center justify-center min-h-screen px-4 bg-gray-100">
     <div class="w-full max-w-6xl bg-black text-white rounded-2xl p-10 shadow-xl space-y-6">
-      <!-- Заголовок -->
       <h1 class="text-[28px] font-bold text-center">Отримання файлу</h1>
 
-      <!-- Попередження -->
+      <!-- Блок попередження початок -->
       <div class="text-md text-white/80 leading-relaxed space-y-1 px-1">
         <p class="flex items-start gap-2">
           <span>Файл можна <strong class="text-white">завантажити лише 1 раз</strong>.</span>
@@ -41,8 +40,9 @@
 
         <base-spinner v-if="isLoading" />
       </div>
+      <!-- Блок попередження кінець -->
 
-      <!-- Блок із даними про файл -->
+      <!-- Блок даних про файл початок -->
       <div
         class="w-full bg-white text-black rounded-xl p-5 flex justify-between items-center shadow-md border border-gray-200"
         v-if="!isLoading"
@@ -61,6 +61,7 @@
           Завантажити файл
         </button>
       </div>
+      <!-- Блок даних про файл кінець -->
     </div>
   </div>
 </template>
@@ -68,13 +69,15 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { formatFileSize, downloadSasToken } from "../plugins/helpers";
-import { normalizeDate } from "@/plugins/normalizeDate";
+import { formatFileSize, downloadSasToken, downloadBlob } from "../plugins/filesHelpers";
+import { handleFetchErrors, normalizeDate, showNotification } from "../plugins/helpers";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();
 
 const fileId = route.params.id as string;
+
+const isLoading = ref(false);
 
 const file = reactive<FileMetadata>({
   fileName: "",
@@ -84,34 +87,21 @@ const file = reactive<FileMetadata>({
   url: "",
 });
 
-const isLoading = ref(false);
-
 const loadFileMetadata = async (fileId: string) => {
   isLoading.value = true;
   try {
     const response = await fetch(`http://localhost:7071/api/getFileMetadata?id=${fileId}`);
-
-    if (!response.ok) {
-      throw new Error("Error: Cant fetch file metadata");
-    }
-
+    await handleFetchErrors(response);
     const data: FileMetadata = await response.json();
 
     file.fileName = data.fileName;
     file.size = data.size;
     file.expiresAt = data.expiresAt;
   } catch (error) {
-    console.error(error);
-  }
-  isLoading.value = false;
-};
-
-const downloadBlob = async (url: string) => {
-  try {
-    const response = await fetch(url);
-    return response.blob();
-  } catch (error) {
-    console.error(error);
+    showNotification("error", "Failed to load file metadata");
+    console.error("Failed to load file metadata:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -119,8 +109,8 @@ const downloadFile = async () => {
   try {
     const sasUrl = await downloadSasToken(file.fileName);
     const blob = await downloadBlob(sasUrl);
-    const usersFile = new Blob([blob!]);
-    const url = URL.createObjectURL(usersFile);
+
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = file.fileName;
@@ -129,7 +119,8 @@ const downloadFile = async () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   } catch (error) {
-    console.error(error);
+    showNotification("error", "Cannot download that file!");
+    console.error("Download failed:", error);
   }
 };
 

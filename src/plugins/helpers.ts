@@ -1,61 +1,42 @@
-export const validateFileName = (fileName: string): string => {
-  const dotIndex = fileName.lastIndexOf(".");
-  if (dotIndex === -1) {
-    return `${fileName}_${Date.now()}`;
+import { type ToastType, useToast } from "vue-toast-notification";
+
+const $toast = useToast();
+
+export function showNotification(type: ToastType, message: string) {
+  $toast.open({
+    position: "top-right",
+    duration: 3000,
+    type,
+    message,
+  });
+}
+
+export function normalizeDate(date: number) {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  };
+  return new Intl.DateTimeFormat(navigator.language, options).format(new Date(date));
+}
+
+export const handleFetchErrors = async (response: Response) => {
+  if (!response.ok) {
+    const contentType = response.headers.get("content-type");
+    let message = `HTTP ${response.status} ${response.statusText}`;
+
+    if (contentType?.includes("application/json")) {
+      const errorBody = await response.json();
+      message += `: ${JSON.stringify(errorBody)}`;
+    } else {
+      const text = await response.text();
+      message += `: ${text}`;
+    }
+
+    throw new Error(message);
   }
 
-  const name = fileName.slice(0, dotIndex);
-  const extension = fileName.slice(dotIndex);
-  return `${name}_${Date.now()}${extension}`;
-};
-
-export const formatFileSize = (size: number): string => {
-  const kylobytes = size / 1024;
-  const megabytes = kylobytes / 1024;
-  return megabytes >= 1 ? `${megabytes.toFixed(2)} MB` : `${kylobytes.toFixed(2)} KB`;
-};
-
-export const uploadSasToken = async (fileName: string, size: number) => {
-  try {
-    const response = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(
-        fileName
-      )}&size=${size}&type=upload`
-    );
-
-    const { url } = await response.json();
-
-    return url;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const downloadSasToken = async (fileName: string) => {
-  try {
-    console.log(fileName);
-    const response = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${fileName}&type=download`
-    );
-
-    const { url } = await response.json();
-
-    return url;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const uploadBlob = async (url: string, file: File) => {
-  try {
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: { "x-ms-blob-type": "BlockBlob" },
-      body: file,
-    });
-
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
+  return response;
 };
