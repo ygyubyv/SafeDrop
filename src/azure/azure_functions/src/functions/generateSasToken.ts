@@ -69,6 +69,11 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
       expiresAt: Date.now() + 1000 * 60 * 60 * 24,
       ttl: 86400,
     });
+
+    return {
+      status: 200,
+      jsonBody: { url, id },
+    };
   }
 
   return {

@@ -26,8 +26,8 @@ export const uploadSasToken = async (fileName: string, size: number) => {
     );
 
     await handleFetchErrors(response);
-    const { url } = await response.json();
-    return url;
+    const { url, id } = await response.json();
+    return { url, id };
   } catch (error) {
     console.error("Помилка при отриманні upload SAS URL:", error);
     showNotification("error", `Помилка при отриманні upload SAS URL: ${error}`);

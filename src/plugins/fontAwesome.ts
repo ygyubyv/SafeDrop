@@ -9,6 +9,7 @@ import {
   faCopy,
   faPlus,
   faQrcode,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faGoogle, faMicrosoft, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -23,7 +24,8 @@ library.add(
   faEnvelope,
   faPlus,
   faCopy,
-  faQrcode
+  faQrcode,
+  faXmark
 );
 
 export { FontAwesomeIcon };

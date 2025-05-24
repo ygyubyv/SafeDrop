@@ -62,14 +62,20 @@ const loadFile = (event: Event): void => {
       return;
     }
 
-    const url = await uploadSasToken(fileName.value, file.size);
+    const data = await uploadSasToken(fileName.value, file.size);
+
+    if (!data) {
+      return;
+    }
+
+    const { url, id } = data;
     await uploadBlob(url, file);
 
     showNotification("success", "Loaded successfully");
 
     isLoading.value = false;
 
-    router.replace({ name: "link", params: { path: "ajsdhvasdjasd" } });
+    router.replace({ name: "link", params: { path: id } });
   };
 
   reader.onerror = () => {
