@@ -1,6 +1,6 @@
 <template>
   <div class="flex items-center justify-center min-h-screen px-4">
-    <div class="flex flex-col items-center justify-center w-full max-w-2xl gap-4">
+    <div class="flex flex-col items-center justify-center w-full max-w-3xl gap-4">
       <!-- Інформаційна секція початок -->
       <section class="w-full bg-neutral-800 rounded-xl p-6 text-white shadow-md">
         <h2 class="text-xl font-bold mb-3 justify-self-center">

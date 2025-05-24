@@ -35,6 +35,7 @@ const generateSasUrl = (
 export async function generateSasToken(req: HttpRequest): Promise<HttpResponseInit> {
   const fileName = req.query.get("filename");
   const size = +(req.query.get("size") || 0);
+  const ttl = +(req.query.get("ttl") || 0);
   const type = req.query.get("type") || "upload";
 
   if (!fileName) {
@@ -66,8 +67,8 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
       fileName,
       size,
       uploadedAt: Date.now(),
-      expiresAt: Date.now() + 1000 * 60 * 60 * 24,
-      ttl: 86400,
+      expiresAt: Date.now() + ttl * 1000,
+      ttl,
     });
 
     return {

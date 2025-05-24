@@ -41,7 +41,7 @@
         v-if="qrCodeIsVisible"
         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
       >
-        <div class="bg-white p-6 rounded-xl shadow-xl relative">
+        <div class="bg-white p-4 rounded-xl shadow-xl relative">
           <button
             class="absolute top-2 right-2 text-gray-600 hover:text-black"
             @click="qrCodeIsVisible = false"
