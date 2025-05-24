@@ -6,7 +6,9 @@ import {
   faArrowLeft,
   faArrowRight,
   faEnvelope,
+  faCopy,
   faPlus,
+  faQrcode,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faGoogle, faMicrosoft, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -19,7 +21,9 @@ library.add(
   faMicrosoft,
   faGithub,
   faEnvelope,
-  faPlus
+  faPlus,
+  faCopy,
+  faQrcode
 );
 
 export { FontAwesomeIcon };

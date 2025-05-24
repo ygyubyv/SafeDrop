@@ -20,4 +20,4 @@ app.component("font-awesome-icon", FontAwesomeIcon);
 app.use(router);
 app.use(ToastPlugin);
 
-app.mount("#app");
+app.mount("#vue-application");

@@ -4,6 +4,7 @@ import MainView from "@/views/MainView.vue";
 import LoginView from "@/views/LoginView.vue";
 import CreateView from "@/views/CreateView.vue";
 import LoadView from "@/views/LoadView.vue";
+import GetLinkView from "@/views/GetLinkView.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -25,6 +26,11 @@ const routes: RouteRecordRaw[] = [
     path: "/load/:id",
     name: "load",
     component: LoadView,
+  },
+  {
+    path: "/link/:path",
+    name: "link",
+    component: GetLinkView,
   },
 ];
 

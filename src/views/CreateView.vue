@@ -18,40 +18,12 @@
           <li>Дані зберігаються у хмарі Microsoft Azure</li>
         </ul>
         <p class="text-sm text-gray-400 mt-2">Безпека та конфіденційність — наш пріоритет.</p>
-
-        <!-- Кнопки перемикання початок -->
-        <div class="flex gap-4 justify-self-center mt-5">
-          <button
-            :class="[
-              'px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer',
-              currentView === 'UploadFile'
-                ? 'bg-white text-black scale-110'
-                : 'bg-neutral-700 text-white hover:bg-neutral-600',
-            ]"
-            @click="currentView = 'UploadFile'"
-          >
-            Додати файл
-          </button>
-
-          <button
-            :class="[
-              'px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer',
-              currentView === 'UploadText'
-                ? 'bg-white text-black scale-110'
-                : 'bg-neutral-700 text-white hover:bg-neutral-600',
-            ]"
-            @click="currentView = 'UploadText'"
-          >
-            Додати текст
-          </button>
-        </div>
-        <!-- Кнопки перемикання кінець -->
       </section>
       <!-- Інформаційна секція кінець -->
 
       <!-- Динамічний компонент початок -->
       <div class="w-full">
-        <component :is="components[currentView]" />
+        <upload-file />
       </div>
       <!-- Динамічний компонент кінець -->
     </div>
@@ -59,14 +31,5 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-
 import UploadFile from "@/components/UploadFile.vue";
-import UploadText from "@/components/UploadText.vue";
-
-type View = "UploadFile" | "UploadText";
-
-const components = { UploadFile, UploadText };
-
-const currentView = ref<View>("UploadFile");
 </script>

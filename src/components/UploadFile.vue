@@ -25,8 +25,11 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { uploadSasToken, uploadBlob } from "../plugins/filesHelpers";
 import { showNotification } from "..//plugins/helpers";
+
+const router = useRouter();
 
 const fileName = ref("");
 const isLoading = ref(false);
@@ -65,6 +68,8 @@ const loadFile = (event: Event): void => {
     showNotification("success", "Loaded successfully");
 
     isLoading.value = false;
+
+    router.replace({ name: "link", params: { path: "ajsdhvasdjasd" } });
   };
 
   reader.onerror = () => {
