@@ -4,6 +4,7 @@ interface FileMetadata {
   id: string;
   fileName: string;
   size: number;
+  downloadAttempts: number;
   uploadedAt: number;
   expiresAt: number;
 }

@@ -25,7 +25,7 @@ export async function timerDeleteExpiredBlobs(
   const blobContainerClient = blobServiceClient.getContainerClient(containerStorage);
 
   const query = {
-    query: "SELECT * FROM c WHERE c.expiresAt <= @now",
+    query: "SELECT * FROM c WHERE c.expiresAt <= @now OR c.downloadAttempts = 0",
     parameters: [{ name: "@now", value: now }],
   };
 

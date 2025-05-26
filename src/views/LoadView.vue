@@ -76,6 +76,7 @@ import {
   showNotification,
   formatDuration,
 } from "../plugins/helpers";
+import { decreaseDownloadAttempts } from "../plugins/cosmosDBHelpers";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();
@@ -108,6 +109,8 @@ const loadFileMetadata = async (fileId: string) => {
     file.size = data.size;
     file.expiresAt = data.expiresAt;
     file.uploadedAt = data.uploadedAt;
+    file.id = data.id;
+    file.url = data.url;
   } catch (error) {
     showNotification("error", "Failed to load file metadata");
     console.error("Failed to load file metadata:", error);
@@ -129,6 +132,8 @@ const downloadFile = async () => {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+
+    await decreaseDownloadAttempts(file.id);
   } catch (error) {
     showNotification("error", "Cannot download that file!");
     console.error("Download failed:", error);
