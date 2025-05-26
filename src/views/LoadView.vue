@@ -8,10 +8,10 @@
         <p class="flex items-start gap-2">
           <span>Файл можна <strong class="text-white">завантажити лише 1 раз</strong>.</span>
         </p>
-        <p class="flex items-start gap-2">
+        <p class="flex items-start gap-2" v-if="file.expiresAt && file.uploadedAt">
           <span>
-            Зберігається на сервері <strong class="text-white">протягом 24 годин</strong> після
-            завантаження.
+            Зберігається на сервері протягом
+            <strong class="text-white">{{ fileDuration }}</strong> після завантаження.
           </span>
         </p>
 
@@ -67,10 +67,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { formatFileSize, downloadSasToken, downloadBlob } from "../plugins/filesHelpers";
-import { handleFetchErrors, normalizeDate, showNotification } from "../plugins/helpers";
+import {
+  handleFetchErrors,
+  normalizeDate,
+  showNotification,
+  formatDuration,
+} from "../plugins/helpers";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();
@@ -83,8 +88,13 @@ const file = reactive<FileMetadata>({
   fileName: "",
   size: 0,
   expiresAt: 0,
+  uploadedAt: 0,
   id: "",
   url: "",
+});
+
+const fileDuration = computed(() => {
+  return formatDuration(file.expiresAt - file.uploadedAt);
 });
 
 const loadFileMetadata = async (fileId: string) => {
@@ -97,6 +107,7 @@ const loadFileMetadata = async (fileId: string) => {
     file.fileName = data.fileName;
     file.size = data.size;
     file.expiresAt = data.expiresAt;
+    file.uploadedAt = data.uploadedAt;
   } catch (error) {
     showNotification("error", "Failed to load file metadata");
     console.error("Failed to load file metadata:", error);

@@ -4,4 +4,5 @@ export interface FileMetadata {
   size: number;
   url: string;
   expiresAt: number;
+  uploadedAt: number;
 }

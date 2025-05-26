@@ -6,7 +6,6 @@ interface FileMetadata {
   size: number;
   uploadedAt: number;
   expiresAt: number;
-  ttl: number;
 }
 
 export async function saveFileMetadata(metadata: FileMetadata) {

@@ -68,7 +68,6 @@ export async function generateSasToken(req: HttpRequest): Promise<HttpResponseIn
       size,
       uploadedAt: Date.now(),
       expiresAt: Date.now() + ttl * 1000,
-      ttl,
     });
 
     return {
