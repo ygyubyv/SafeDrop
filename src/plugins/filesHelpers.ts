@@ -1,4 +1,7 @@
 import { handleFetchErrors, showNotification } from "./helpers";
+import { useAuth } from "@/composables/useAuth";
+
+const { getAccessToken } = useAuth();
 
 export const validateFileName = (fileName: string): string => {
   const dotIndex = fileName.lastIndexOf(".");
@@ -19,10 +22,19 @@ export const formatFileSize = (size: number): string => {
 
 export const uploadSasToken = async (fileName: string, ttl: number, size: number) => {
   try {
+    const accessToken = await getAccessToken();
+    if (!accessToken) {
+      throw new Error("You have no access for this action");
+    }
     const response = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${validateFileName(
+      `http://localhost:7071/api/getUploadSasToken?filename=${validateFileName(
         fileName
-      )}&size=${size}&ttl=${ttl}&type=upload`
+      )}&size=${size}&ttl=${ttl}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
 
     await handleFetchErrors(response);
@@ -36,8 +48,17 @@ export const uploadSasToken = async (fileName: string, ttl: number, size: number
 
 export const downloadSasToken = async (fileName: string) => {
   try {
+    const accessToken = await getAccessToken();
+    if (!accessToken) {
+      throw new Error("You have no access for this action");
+    }
     const response = await fetch(
-      `http://localhost:7071/api/generateSasToken?filename=${fileName}&type=download`
+      `http://localhost:7071/api/getDownloadSasToken?filename=${fileName}`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
 
     await handleFetchErrors(response);

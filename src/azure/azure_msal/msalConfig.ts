@@ -19,7 +19,7 @@ export const msalConfig: Configuration = {
 };
 
 export const loginRequest: RedirectRequest = {
-  scopes: ["openid", "profile"],
+  scopes: ["https://dopii.onmicrosoft.com/api/user_impersonation"],
 };
 
 export const myMSALObj = new PublicClientApplication(msalConfig);
