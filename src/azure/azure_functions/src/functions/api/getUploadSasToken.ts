@@ -1,7 +1,8 @@
 import { app, HttpRequest, HttpResponseInit } from "@azure/functions";
 import { v4 as uuidv4 } from "uuid";
-import { generateSasUrl } from "../helpers/generateSasUrl";
-import { saveFileMetadata } from "../cosmos_db/saveFileMetadata";
+import { generateSasUrl } from "../../helpers/generateSasUrl";
+import { verifyJwtToken } from "../../helpers/jwtVerifier";
+import { saveFileMetadata } from "../../cosmos_db/saveFileMetadata";
 
 export async function getUploadSasToken(req: HttpRequest): Promise<HttpResponseInit> {
   const fileName = req.query.get("filename");
@@ -10,6 +11,19 @@ export async function getUploadSasToken(req: HttpRequest): Promise<HttpResponseI
 
   if (!fileName || !size || !ttl) {
     return { status: 400, body: "Missing one of: filename, size, ttl" };
+  }
+
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    return { status: 401, body: "Missing Authorization token" };
+  }
+
+  try {
+    await verifyJwtToken(token, "safedrop.upload");
+  } catch (error) {
+    return { status: 403, body: "Invalid or expired token" };
   }
 
   const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;

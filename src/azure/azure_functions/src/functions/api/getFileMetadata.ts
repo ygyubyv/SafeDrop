@@ -1,13 +1,28 @@
 import { app, HttpRequest, HttpResponseInit } from "@azure/functions";
-import { db } from "../cosmos_db/cosmosClient";
+import { verifyJwtToken } from "../../helpers/jwtVerifier";
+import { db } from "../../cosmos_db/cosmosClient";
 
 export async function getFileMetadata(req: HttpRequest): Promise<HttpResponseInit> {
   const id = req.query.get("id");
+
   if (!id) {
     return {
       status: 400,
       body: "Missing 'id' query parameter",
     };
+  }
+
+  const authHeader = req.headers.get("authorization");
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    return { status: 401, body: "Missing Authorization token" };
+  }
+
+  try {
+    await verifyJwtToken(token, "safedrop.download");
+  } catch (error) {
+    return { status: 403, body: "Invalid or expired token" };
   }
 
   try {

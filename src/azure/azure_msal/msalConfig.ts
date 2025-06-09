@@ -19,7 +19,10 @@ export const msalConfig: Configuration = {
 };
 
 export const loginRequest: RedirectRequest = {
-  scopes: ["https://dopii.onmicrosoft.com/api/user_impersonation"],
+  scopes: [
+    "https://dopii.onmicrosoft.com/api/safedrop.download",
+    "https://dopii.onmicrosoft.com/api/safedrop.upload",
+  ],
 };
 
 export const myMSALObj = new PublicClientApplication(msalConfig);

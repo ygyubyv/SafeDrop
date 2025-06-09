@@ -14,9 +14,12 @@
     "@azure/cosmos": "^4.4.1",
     "@azure/functions": "^4.0.0",
     "@azure/storage-blob": "^12.27.0",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.2.0",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20.x",
     "rimraf": "^5.0.0",
     "typescript": "^5.8.3"

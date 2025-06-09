@@ -1,5 +1,6 @@
 import { app, HttpRequest, HttpResponseInit, InvocationContext } from "@azure/functions";
 import { CosmosClient } from "@azure/cosmos";
+import { verifyJwtToken } from "../../helpers/jwtVerifier";
 
 const cosmosConnection = process.env.COSMOS_DB_CONNECTION_STRING!;
 const databaseName = "safe-drop";
@@ -10,8 +11,22 @@ export async function decreaseAttempts(
   context: InvocationContext
 ): Promise<HttpResponseInit> {
   const id = request.query.get("id");
+
   if (!id) {
     return { status: 400, body: "Missing id" };
+  }
+
+  const authHeader = request.headers.get("authorization");
+  const token = authHeader?.split(" ")[1];
+
+  if (!token) {
+    return { status: 401, body: "Missing Authorization token" };
+  }
+
+  try {
+    await verifyJwtToken(token, "safedrop.download");
+  } catch (error) {
+    return { status: 403, body: "Invalid or expired token" };
   }
 
   const cosmosClient = new CosmosClient(cosmosConnection);

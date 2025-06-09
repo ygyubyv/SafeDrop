@@ -69,6 +69,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useAuth } from "@/composables/useAuth";
 import { formatFileSize, downloadSasToken, downloadBlob } from "../plugins/filesHelpers";
 import {
   handleFetchErrors,
@@ -80,6 +81,7 @@ import { decreaseDownloadAttempts } from "../plugins/cosmosDBHelpers";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();
+const { getAccessToken } = useAuth();
 
 const fileId = route.params.id as string;
 
@@ -101,7 +103,13 @@ const fileDuration = computed(() => {
 const loadFileMetadata = async (fileId: string) => {
   isLoading.value = true;
   try {
-    const response = await fetch(`http://localhost:7071/api/getFileMetadata?id=${fileId}`);
+    const accessToken = await getAccessToken();
+
+    const response = await fetch(`http://localhost:7071/api/getFileMetadata?id=${fileId}`, {
+      headers: {
+        Authorization: `Bearer: ${accessToken}`,
+      },
+    });
     await handleFetchErrors(response);
     const data: FileMetadata = await response.json();
 
