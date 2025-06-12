@@ -69,9 +69,9 @@ const qrCodeIsVisible = ref(false);
 const copyLink = async () => {
   try {
     await navigator.clipboard.writeText(link.value);
-    showNotification("success", "Successfully copied!");
+    showNotification("success", "Успішно скопійовано!");
   } catch (error) {
-    showNotification("error", "Cannot copy link");
+    showNotification("error", "Не вдалося скопіювати посилання");
     console.error(error);
   }
 };

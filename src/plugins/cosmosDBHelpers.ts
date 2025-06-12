@@ -7,7 +7,7 @@ export const decreaseDownloadAttempts = async (fileId: string) => {
   try {
     const accessToken = await getAccessToken();
     if (!accessToken) {
-      throw new Error("You have no access for this action");
+      throw new Error("У вас немає доступу для цієї дії");
     }
     await fetch(`http://localhost:7071/api/decreaseAttempts?id=${fileId}`, {
       method: "PATCH",
@@ -18,6 +18,6 @@ export const decreaseDownloadAttempts = async (fileId: string) => {
     });
   } catch (error) {
     console.error(`Помилка при зменшенні кількості спроб завантаження файлу, ${error}`);
-    showNotification("error", "Помилка при зменшенні кількості спроб завантаження файлу");
+    showNotification("error", "Не вдалося зменшити кількість спроб завантаження файлу");
   }
 };

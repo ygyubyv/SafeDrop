@@ -108,7 +108,7 @@ const loadFile = (event: Event): void => {
   };
 
   reader.onerror = () => {
-    showNotification("error", `Помилка читання файлу:, ${reader.error}`);
+    showNotification("error", `Помилка читання файлу`);
     isLoading.value = false;
     console.error(reader.error);
   };

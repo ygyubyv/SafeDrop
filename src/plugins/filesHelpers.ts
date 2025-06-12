@@ -24,7 +24,7 @@ export const uploadSasToken = async (fileName: string, ttl: number, size: number
   try {
     const accessToken = await getAccessToken();
     if (!accessToken) {
-      throw new Error("You have no access for this action");
+      throw new Error("У вас немає доступу для цієї дії");
     }
     const response = await fetch(
       `http://localhost:7071/api/getUploadSasToken?filename=${validateFileName(
@@ -42,7 +42,6 @@ export const uploadSasToken = async (fileName: string, ttl: number, size: number
     return { url, id };
   } catch (error) {
     console.error("Помилка при отриманні upload SAS URL:", error);
-    showNotification("error", `Помилка при отриманні upload SAS URL: ${error}`);
   }
 };
 
@@ -50,7 +49,7 @@ export const downloadSasToken = async (fileName: string) => {
   try {
     const accessToken = await getAccessToken();
     if (!accessToken) {
-      throw new Error("You have no access for this action");
+      throw new Error("У вас немає доступу для цієї дії");
     }
     const response = await fetch(
       `http://localhost:7071/api/getDownloadSasToken?filename=${fileName}`,
@@ -66,7 +65,6 @@ export const downloadSasToken = async (fileName: string) => {
     return url;
   } catch (error) {
     console.error("Помилка при отриманні download SAS URL:", error);
-    showNotification("error", `Помилка при отриманні download SAS URL: ${error}`);
   }
 };
 
@@ -82,7 +80,6 @@ export const uploadBlob = async (url: string, file: File) => {
     return response;
   } catch (error) {
     console.error("Помилка при завантаженні blob:", error);
-    showNotification("error", `Помилка при завантаженні blob: ${error}`);
   }
 };
 
@@ -92,8 +89,7 @@ export const downloadBlob = async (url: string): Promise<Blob> => {
     await handleFetchErrors(response);
     return await response.blob();
   } catch (error) {
-    console.error("Failed to download blob:", error);
-    showNotification("error", `Failed to download blob: ${error}`);
+    console.error("Помилка при завантаженні blob:", error);
     throw error;
   }
 };

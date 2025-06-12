@@ -8,24 +8,24 @@ export const useAuth = () => {
   const login = async () => {
     try {
       if (!myMSALObj) {
-        throw new Error("MSAL not initialized. Call initializeMsal() before using MSAL API");
+        throw new Error("MSAL не ініціалізовано");
       }
       await myMSALObj.loginRedirect(loginRequest);
     } catch (error) {
-      console.error("Login error", error);
+      console.error("Помилка входу", error);
     }
   };
 
   const logout = async () => {
     try {
       if (!myMSALObj) {
-        throw new Error("MSAL not initialized. Call initializeMsal() before using MSAL API");
+        throw new Error("MSAL не ініціалізовано");
       }
       isAuthenticated.value = false;
       isInitialized.value = false;
       await myMSALObj.logoutRedirect();
     } catch (error) {
-      console.error("Logout error", error);
+      console.error("Помилка виходу", error);
     }
   };
 
@@ -41,7 +41,7 @@ export const useAuth = () => {
         isAuthenticated.value = false;
       }
     } catch (error) {
-      console.error("Init auth error:", error);
+      console.error("Помилка авторизації, спробуйте ще раз:", error);
       isAuthenticated.value = false;
     } finally {
       isInitialized.value = true;
@@ -53,7 +53,7 @@ export const useAuth = () => {
       const response = await myMSALObj.acquireTokenSilent(loginRequest);
       return response.accessToken;
     } catch (error) {
-      console.warn("Silent token acquisition failed:", error);
+      console.warn("Не вдалося отримати токен:", error);
       return null;
     }
   };
