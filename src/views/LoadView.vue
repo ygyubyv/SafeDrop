@@ -38,7 +38,7 @@
           </span>
         </div>
 
-        <base-spinner v-if="isLoading" />
+        <base-spinner mode="White-spinner" v-if="isLoading" />
       </div>
       <!-- Блок попередження кінець -->
 
@@ -78,6 +78,7 @@ import {
   formatDuration,
 } from "../plugins/helpers";
 import { decreaseDownloadAttempts } from "../plugins/cosmosDBHelpers";
+import BaseSpinner from "@/components/ui/BaseSpinner.vue";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();

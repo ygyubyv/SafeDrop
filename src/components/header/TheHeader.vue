@@ -13,7 +13,7 @@
 
       <div class="flex items-center justify-center gap-2">
         <div>
-          <router-link :to="{ name: 'create' }">
+          <router-link :to="{ name: 'create' }" v-if="isAuthenticated">
             <span class="block mr-1 md:mr-3 text-md md:text-lg hover:scale-110 glow-white-animated"
               >Create</span
             >
@@ -21,18 +21,18 @@
         </div>
 
         <div>
-          <router-link v-if="!isAuthenticated" :to="{ name: 'login' }">
-            <button
-              class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
-            >
-              <span class="mr-1 md:mr-2">Login</span>
-              <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
-            </button>
-          </router-link>
+          <button
+            class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
+            v-if="!isAuthenticated"
+            @click="handleLogin"
+          >
+            <span class="mr-1 md:mr-2">Login</span>
+            <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
+          </button>
 
           <button
             v-else
-            @click="logout"
+            @click="handleLogout"
             class="w-auto h-auto bg-white text-black p-1.75 md:p-2 rounded-lg cursor-pointer hover:scale-105"
           >
             <span class="mr-1 md:mr-2">Logout</span>
@@ -47,7 +47,15 @@
 <script setup lang="ts">
 import { useAuth } from "@/composables/useAuth";
 
-const { isAuthenticated, logout } = useAuth();
+const { isAuthenticated, login, logout } = useAuth();
+
+const handleLogin = async () => {
+  await login();
+};
+
+const handleLogout = async () => {
+  await logout();
+};
 </script>
 
 <style scoped>

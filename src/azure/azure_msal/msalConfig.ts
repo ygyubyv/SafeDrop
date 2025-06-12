@@ -11,9 +11,10 @@ export const msalConfig: Configuration = {
     authority: `https://${mslCfg.tenantName}.b2clogin.com/${mslCfg.tenantName}.onmicrosoft.com/${mslCfg.policyName}`,
     knownAuthorities: [`${mslCfg.tenantName}.b2clogin.com`],
     redirectUri: "http://localhost:5173/",
+    postLogoutRedirectUri: "/",
   },
   cache: {
-    cacheLocation: "localStorage",
+    cacheLocation: "sessionStorage",
     storeAuthStateInCookie: false,
   },
 };

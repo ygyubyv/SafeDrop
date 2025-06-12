@@ -2,6 +2,7 @@ import { ref } from "vue";
 import { loginRequest, myMSALObj } from "../azure/azure_msal/msalConfig";
 
 const isAuthenticated = ref(false);
+const isInitialized = ref(false);
 
 export const useAuth = () => {
   const login = async () => {
@@ -20,23 +21,30 @@ export const useAuth = () => {
       if (!myMSALObj) {
         throw new Error("MSAL not initialized. Call initializeMsal() before using MSAL API");
       }
+      isAuthenticated.value = false;
+      isInitialized.value = false;
       await myMSALObj.logoutRedirect();
     } catch (error) {
       console.error("Logout error", error);
     }
   };
 
-  const handleRedirect = async () => {
+  const initAuth = async () => {
+    if (isInitialized.value) return;
     try {
       await myMSALObj.handleRedirectPromise();
       const accounts = myMSALObj.getAllAccounts();
-      if (accounts.length <= 0) {
-        return;
+      if (accounts.length > 0) {
+        myMSALObj.setActiveAccount(accounts[0]);
+        isAuthenticated.value = true;
+      } else {
+        isAuthenticated.value = false;
       }
-      myMSALObj.setActiveAccount(accounts[0]);
-      isAuthenticated.value = true;
     } catch (error) {
-      console.error("Error in handle redirect", error);
+      console.error("Init auth error:", error);
+      isAuthenticated.value = false;
+    } finally {
+      isInitialized.value = true;
     }
   };
 
@@ -45,16 +53,10 @@ export const useAuth = () => {
       const response = await myMSALObj.acquireTokenSilent(loginRequest);
       return response.accessToken;
     } catch (error) {
-      console.warn("Silent token acquisition failed. Trying popup...", error);
-      try {
-        const response = await myMSALObj.acquireTokenPopup(loginRequest);
-        return response.accessToken;
-      } catch (popupError) {
-        console.error("Token acquisition failed:", popupError);
-        return null;
-      }
+      console.warn("Silent token acquisition failed:", error);
+      return null;
     }
   };
 
-  return { isAuthenticated, login, logout, handleRedirect, getAccessToken };
+  return { isAuthenticated, login, logout, initAuth, getAccessToken };
 };

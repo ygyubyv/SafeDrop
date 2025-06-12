@@ -42,7 +42,7 @@
 
     <!-- Блок спінера початок -->
     <div class="flex justify-center" v-if="isLoading">
-      <base-spinner />
+      <base-spinner mode="White-spinner" />
     </div>
     <!-- Блок спінера кінець -->
   </div>
@@ -54,6 +54,7 @@ import { useRouter } from "vue-router";
 import { useTTL } from "@/composables/useTTL";
 import { showNotification } from "..//plugins/helpers";
 import { uploadSasToken, uploadBlob, formatFileSize } from "../plugins/filesHelpers";
+import BaseSpinner from "./ui/BaseSpinner.vue";
 
 const router = useRouter();
 const { fileTTL, TTL } = useTTL();

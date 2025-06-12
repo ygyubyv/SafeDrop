@@ -1,6 +1,11 @@
 <template>
   <div class="spinner">
-    <div class="lds-roller">
+    <div
+      class="lds-roller"
+      :style="{
+        '--spinner-color': props.mode === 'White-spinner' ? '#fff' : '#000',
+      }"
+    >
       <div></div>
       <div></div>
       <div></div>
@@ -12,6 +17,13 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+interface Props {
+  mode: "White-spinner" | "Black-spinner";
+}
+const props = defineProps<Props>();
+</script>
 
 <style scoped>
 .spinner {
@@ -38,7 +50,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--spinner-color, #fff);
   margin: -4px 0 0 -4px;
 }
 .lds-roller div:nth-child(1) {
