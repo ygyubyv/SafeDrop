@@ -52,8 +52,8 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useTTL } from "@/composables/useTTL";
-import { showNotification } from "..//plugins/helpers";
-import { uploadSasToken, uploadBlob, formatFileSize } from "../plugins/filesHelpers";
+import { showNotification } from "../helpers/showNotification";
+import { uploadSasToken, uploadBlob, formatFileSize } from "../helpers/filesHelpers";
 import BaseSpinner from "./ui/BaseSpinner.vue";
 
 const router = useRouter();

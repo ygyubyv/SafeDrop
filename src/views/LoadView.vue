@@ -103,14 +103,13 @@
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useAuth } from "@/composables/useAuth";
-import { formatFileSize, downloadSasToken, downloadBlob } from "../plugins/filesHelpers";
-import {
-  handleFetchErrors,
-  normalizeDate,
-  showNotification,
-  formatDuration,
-} from "../plugins/helpers";
-import { decreaseDownloadAttempts } from "../plugins/cosmosDBHelpers";
+import axiosInstance from "@/plugins/axios";
+import { formatFileSize, downloadSasToken, downloadBlob } from "../helpers/filesHelpers";
+import { handleFetchErrors } from "@/helpers/handleFetchErrors";
+import { normalizeDate } from "@/helpers/normilizeDate";
+import { formatDuration } from "@/helpers/formatDuration";
+import { showNotification } from "@/helpers/showNotification";
+import { decreaseDownloadAttempts } from "@/helpers/cosmosDBHelpers";
 import BaseSpinner from "@/components/ui/BaseSpinner.vue";
 import type { FileMetadata } from "@/types/FileMetadata";
 
@@ -138,15 +137,7 @@ const fileDuration = computed(() => {
 const loadFileMetadata = async (fileId: string) => {
   isLoading.value = true;
   try {
-    const accessToken = await getAccessToken();
-
-    const response = await fetch(`http://localhost:7071/api/getFileMetadata?id=${fileId}`, {
-      headers: {
-        Authorization: `Bearer: ${accessToken}`,
-      },
-    });
-    await handleFetchErrors(response);
-    const data: FileMetadata = await response.json();
+    const { data } = await axiosInstance.get(`/getFileMetadata?id=${fileId}`);
 
     file.fileName = data.fileName;
     file.size = data.size;

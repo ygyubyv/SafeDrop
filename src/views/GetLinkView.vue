@@ -59,7 +59,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { showNotification } from "@/plugins/helpers";
+import { showNotification } from "@/helpers/showNotification";
 import vueQr from "vue-qr/src/packages/vue-qr.vue";
 
 const route = useRoute();

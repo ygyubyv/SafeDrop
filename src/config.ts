@@ -4,3 +4,5 @@ export const msalConfig = {
   tenantName: import.meta.env.VITE_MSAL_TENANT_NAME,
   policyName: import.meta.env.VITE_MSAL_POLICY_NAME,
 };
+
+export const backendURL = import.meta.env.VITE_BACKEND_API_URL;
