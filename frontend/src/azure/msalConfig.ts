@@ -1,4 +1,4 @@
-import { msalConfig as mslCfg } from "../../config";
+import { msalConfig as mslCfg } from "../config";
 import {
   PublicClientApplication,
   type Configuration,

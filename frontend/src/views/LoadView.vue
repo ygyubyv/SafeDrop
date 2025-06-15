@@ -102,10 +102,8 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
-import { useAuth } from "@/composables/useAuth";
 import axiosInstance from "@/plugins/axios";
 import { formatFileSize, downloadSasToken, downloadBlob } from "../helpers/filesHelpers";
-import { handleFetchErrors } from "@/helpers/handleFetchErrors";
 import { normalizeDate } from "@/helpers/normilizeDate";
 import { formatDuration } from "@/helpers/formatDuration";
 import { showNotification } from "@/helpers/showNotification";
@@ -114,7 +112,6 @@ import BaseSpinner from "@/components/ui/BaseSpinner.vue";
 import type { FileMetadata } from "@/types/FileMetadata";
 
 const route = useRoute();
-const { getAccessToken } = useAuth();
 
 const fileId = route.params.id as string;
 
