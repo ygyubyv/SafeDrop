@@ -1,21 +1,22 @@
 import { app, InvocationContext } from "@azure/functions";
-import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
-import { CosmosClient } from "@azure/cosmos";
+import {
+  BlobServiceClient,
+  StorageSharedKeyCredential,
+} from "@azure/storage-blob";
+import { db } from "../../cosmos_db/cosmosClient";
 
 const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
 const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
-const cosmosConnection = process.env.COSMOS_DB_CONNECTION_STRING!;
-const cosmosDbName = "safe-drop";
-const cosmosContainerName = "metadata";
 const blobContainerName = "safe-drop";
 
-const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+const sharedKeyCredential = new StorageSharedKeyCredential(
+  accountName,
+  accountKey
+);
 const blobServiceClient = new BlobServiceClient(
   `https://${accountName}.blob.core.windows.net`,
   sharedKeyCredential
 );
-
-const cosmosClient = new CosmosClient(cosmosConnection);
 
 type MetadataDocument = {
   id: string;
@@ -47,8 +48,7 @@ export async function cosmosDbDeleteBlobOnAttemptsZero(
         await blobClient.deleteIfExists();
         context.log(`File ${fileName} was deleted out of Blob Storage`);
 
-        const container = cosmosClient.database(cosmosDbName).container(cosmosContainerName);
-        await container.item(id, id).delete();
+        await db.item(id, id).delete();
         context.log(`Document ${id} was deleted out of Cosmos DB`);
       } catch (err) {
         context.error(`Error ${fileName}:`, err);

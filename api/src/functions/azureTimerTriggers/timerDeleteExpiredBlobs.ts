@@ -1,12 +1,12 @@
 import { app, InvocationContext, Timer } from "@azure/functions";
-import { CosmosClient } from "@azure/cosmos";
-import { BlobServiceClient, StorageSharedKeyCredential } from "@azure/storage-blob";
+import {
+  BlobServiceClient,
+  StorageSharedKeyCredential,
+} from "@azure/storage-blob";
+import { db } from "../../cosmos_db/cosmosClient";
 
 const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME!;
 const accountKey = process.env.AZURE_STORAGE_ACCOUNT_KEY!;
-const cosmosConnection = process.env.COSMOS_DB_CONNECTION_STRING!;
-const databaseName = "safe-drop";
-const containerName = "metadata";
 const containerStorage = "safe-drop";
 
 export async function timerDeleteExpiredBlobs(
@@ -14,22 +14,25 @@ export async function timerDeleteExpiredBlobs(
   context: InvocationContext
 ): Promise<void> {
   const now = Date.now();
-  const cosmosClient = new CosmosClient(cosmosConnection);
-  const container = cosmosClient.database(databaseName).container(containerName);
 
-  const sharedKeyCredential = new StorageSharedKeyCredential(accountName, accountKey);
+  const sharedKeyCredential = new StorageSharedKeyCredential(
+    accountName,
+    accountKey
+  );
   const blobServiceClient = new BlobServiceClient(
     `https://${accountName}.blob.core.windows.net`,
     sharedKeyCredential
   );
-  const blobContainerClient = blobServiceClient.getContainerClient(containerStorage);
+  const blobContainerClient =
+    blobServiceClient.getContainerClient(containerStorage);
 
   const query = {
-    query: "SELECT * FROM c WHERE c.expiresAt <= @now OR c.downloadAttempts = 0",
+    query:
+      "SELECT * FROM c WHERE c.expiresAt <= @now OR c.downloadAttempts = 0",
     parameters: [{ name: "@now", value: now }],
   };
 
-  const { resources } = await container.items.query(query).fetchAll();
+  const { resources } = await db.items.query(query).fetchAll();
 
   context.log(`Found documents to delete: ${resources.length}`);
 
@@ -39,10 +42,10 @@ export async function timerDeleteExpiredBlobs(
       await blobClient.deleteIfExists();
       context.log(`File ${doc.fileName} was deleted.`);
 
-      await container.item(doc.id, doc.id).delete();
-      context.log(`Document ${doc.id} was deleter out of Cosmos DB.`);
+      await db.item(doc.id, doc.id).delete();
+      context.log(`Document ${doc.id} was deleted out of Cosmos DB.`);
     } catch (err) {
-      context.log(`Errur ${doc.fileName}: ${err}`);
+      context.log(`Error ${doc.fileName}: ${err}`);
     }
   }
 }
