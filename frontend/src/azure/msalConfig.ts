@@ -10,7 +10,7 @@ export const msalConfig: Configuration = {
     clientId: mslCfg.clientID,
     authority: `https://${mslCfg.tenantName}.b2clogin.com/${mslCfg.tenantName}.onmicrosoft.com/${mslCfg.policyName}`,
     knownAuthorities: [`${mslCfg.tenantName}.b2clogin.com`],
-    redirectUri: "http://localhost:5173/",
+    redirectUri: "https://lively-hill-0ca930403.6.azurestaticapps.net/",
     postLogoutRedirectUri: "/",
   },
   cache: {

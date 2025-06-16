@@ -81,7 +81,9 @@ const toggleQrCodeVisibility = () => {
 };
 
 onMounted(() => {
-  link.value = `http://localhost:5173/load/${route.params.path as string}`;
+  link.value = `https://lively-hill-0ca930403.6.azurestaticapps.net/load/${
+    route.params.path as string
+  }`;
 });
 </script>
 
