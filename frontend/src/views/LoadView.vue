@@ -1,17 +1,19 @@
 <template>
   <div class="flex items-center justify-center min-h-screen px-4 bg-gray-100">
-    <div class="w-full max-w-6xl bg-black text-white rounded-2xl p-10 shadow-xl space-y-6">
-      <h1 class="text-[28px] font-bold text-center">Отримання файлу</h1>
+    <div
+      class="w-full max-w-6xl bg-black text-white rounded-2xl py-8 px-4 sm:p-10 shadow-xl space-y-3 sm:space-y-6"
+    >
+      <h1 class="text-lg md:text-[28px] font-bold text-center">Отримання файлу</h1>
 
       <!-- Блок попередження початок -->
       <div
         class="text-md text-white/80 leading-relaxed space-y-1 px-1"
         v-if="!isLoading && !isError"
       >
-        <p class="flex items-start gap-2">
+        <p class="text-center sm:text-start">
           <span>Файл можна <strong class="text-white">завантажити лише 1 раз</strong>.</span>
         </p>
-        <p class="flex items-start gap-2">
+        <p class="text-center sm:text-start">
           <span>
             Зберігається на сервері протягом
             <strong class="text-white">{{ fileDuration }}</strong> після завантаження.
@@ -45,18 +47,25 @@
 
       <!-- Блок даних про файл початок -->
       <div
-        class="w-full bg-white text-black rounded-xl p-5 flex justify-between items-center shadow-md border border-gray-200"
+        class="w-full bg-white text-black rounded-xl p-3.5 md:p-5 flex justify-between items-center shadow-md border border-gray-200"
         v-if="!isLoading && !isError"
       >
         <div>
-          <p class="text-lg font-medium truncate max-w-[300px]">
+          <p class="text-base md:text-lg font-medium truncate max-w-[150px] md:max-w-[300px]">
             {{ file.fileName }}
           </p>
-          <p class="text-sm text-gray-600">{{ formatFileSize(file.size) }}</p>
+          <p class="text-xs md:text-sm text-gray-600">{{ formatFileSize(file.size) }}</p>
         </div>
 
         <button
-          class="px-6 py-2 bg-black text-white rounded-md hover:scale-105 transition-transform cursor-pointer"
+          class="sm:hidden px-3 py-1.5 bg-black text-white rounded-md cursor-pointer"
+          @click="downloadFile"
+        >
+          <font-awesome-icon icon="download" />
+        </button>
+
+        <button
+          class="hidden sm:block px-3 py-1.5 md:px-6 md:py-2 bg-black text-white rounded-md hover:scale-105 transition-transform cursor-pointer"
           @click="downloadFile"
         >
           Завантажити файл

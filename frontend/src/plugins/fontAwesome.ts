@@ -9,8 +9,18 @@ import {
   faPlus,
   faQrcode,
   faXmark,
+  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faRightToBracket, faArrowRight, faArrowLeft, faPlus, faCopy, faQrcode, faXmark);
+library.add(
+  faRightToBracket,
+  faArrowRight,
+  faArrowLeft,
+  faPlus,
+  faCopy,
+  faQrcode,
+  faXmark,
+  faDownload
+);
 
 export { FontAwesomeIcon };

@@ -11,7 +11,7 @@ export const useSlider = () => {
   onMounted(() => {
     interval = setInterval(() => {
       nextSlide();
-    }, 6000);
+    }, 10000);
   });
 
   onBeforeUnmount(() => {

@@ -61,19 +61,9 @@ const handleLogout = async () => {
 <style scoped>
 .glow-white-animated {
   color: #fff;
-  text-shadow: 0 0 20px #fff, 0 0 40px #fff, 0 0 60px #fff, 0 0 80px #fff, 0 0 100px #fff,
-    0 0 120px #fff, 0 0 140px #fff;
-  animation: glow 2s ease-in-out infinite alternate;
+  transition: text-shadow 0.3s ease;
 }
-
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #fff, 0 0 50px #fff,
-      0 0 60px #fff, 0 0 70px #fff;
-  }
-  100% {
-    text-shadow: 0 0 30px #fff, 0 0 60px #fff, 0 0 90px #fff, 0 0 120px #fff, 0 0 150px #fff,
-      0 0 180px #fff, 0 0 210px #fff;
-  }
+.glow-white-animated:hover {
+  text-shadow: 0 0 20px #fff, 0 0 30px #fff;
 }
 </style>

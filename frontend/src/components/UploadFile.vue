@@ -1,8 +1,8 @@
 <template>
   <div class="w-full bg-neutral-800 rounded-xl shadow-md p-6 flex flex-col gap-4">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row items-center justify-between">
       <!-- Заголовок початок -->
-      <h2 class="text-md font-semibold text-white">
+      <h2 class="text-sm md:text-base mb-4 sm:mb-0 text-center font-semibold text-white">
         Додайте файл та виберіть тривалість його життя
       </h2>
       <!-- Заголовок кінець -->
@@ -11,14 +11,14 @@
       <div class="flex items-center gap-3">
         <label
           for="fileInput"
-          class="cursor-pointer px-4 py-2 bg-white text-black rounded-lg hover:scale-105 hover:bg-gray-200 transition"
+          class="cursor-pointer text-sm md:text-base px-2.5 py-1.75 md:px-4 md:py-2 bg-white text-black rounded-lg hover:scale-105 hover:bg-gray-200 transition"
         >
           Вибрати файл
         </label>
         <input id="fileInput" type="file" class="hidden" @change="loadFile" />
 
         <select
-          class="px-3 py-2 rounded-lg bg-neutral-700 text-white focus:outline-none border-0 flex-shrink-0 cursor-pointer"
+          class="px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg bg-neutral-700 text-white focus:outline-none border-0 flex-shrink-0 cursor-pointer"
           v-model="fileTTL"
         >
           <option value="1h">1 година</option>
@@ -32,16 +32,18 @@
 
     <!-- Блок з назвою файлу і розміром початок -->
     <div
-      class="bg-white text-black text-md rounded-xl p-5 flex justify-between items-center shadow-md border border-gray-200"
+      class="bg-white text-black text-md rounded-xl p-3.75 md:p-5 flex justify-between items-center shadow-md border border-gray-200"
       v-if="fileName"
     >
-      <h2 class="truncate max-w-full" title="Назва файлу">{{ fileName }}</h2>
-      <p v-if="fileSize">Розмір: {{ formatFileSize(fileSize) }}</p>
+      <h2 class="truncate w-1/2 sm:max-w-full text-sm sm:text-base" title="Назва файлу">
+        {{ fileName }}
+      </h2>
+      <p v-if="fileSize" class="text-sm sm:text-base">Розмір: {{ formatFileSize(fileSize) }}</p>
     </div>
     <!-- Блок з назвою файлу і розміром кінець -->
 
     <!-- Блок спінера початок -->
-    <div class="flex justify-center" v-if="isLoading">
+    <div class="flex justify-center scale-80 sm:scale-100" v-if="isLoading">
       <base-spinner mode="White-spinner" />
     </div>
     <!-- Блок спінера кінець -->

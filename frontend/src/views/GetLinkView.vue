@@ -1,30 +1,32 @@
 <template>
   <div class="flex items-center justify-center min-h-screen px-4 bg-gray-100">
-    <div class="w-full max-w-4xl bg-black text-white rounded-2xl py-10 px-6 shadow-xl space-y-5">
+    <div
+      class="w-full max-w-4xl bg-black text-white rounded-2xl py-7.5 sm:py-10 px-6 shadow-xl space-y-2.5 sm:space-y-5"
+    >
       <!-- Інформаційний блок початок -->
-      <div class="text-lg font-semibold text-center">
+      <div class="sm:text-lg font-semibold text-center">
         Файл успішно завантажено. Ви можете поділитися цим посиланням або згенерувати QR-код.
       </div>
       <!-- Інформаційний блок кінець -->
 
       <!-- Блок з лінкою і кнопками початок -->
       <div
-        class="w-full bg-white text-black rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md border border-gray-200"
+        class="w-full bg-white text-black rounded-xl p-3.5 md:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md border border-gray-200"
       >
         <div class="text-md md:text-lg break-all max-h-28 overflow-auto">
           {{ link }}
         </div>
 
-        <div class="flex gap-2.5 self-end md:self-auto">
+        <div class="flex gap-2 sm:gap-2.5 self-end md:self-auto">
           <button
-            class="px-4 py-2 bg-black text-white rounded-md hover:scale-105 transition-transform duration-150 cursor-pointer"
+            class="px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white rounded-md hover:scale-105 transition-transform duration-150 cursor-pointer"
             title="Скопіювати лінк"
             @click="copyLink"
           >
             <font-awesome-icon icon="fa-solid fa-copy" />
           </button>
           <button
-            class="px-4 py-2 bg-black text-white rounded-md hover:scale-105 transition-transform duration-150 cursor-pointer"
+            class="px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white rounded-md hover:scale-105 transition-transform duration-150 cursor-pointer"
             title="Згенерувати QR-код"
             @click="toggleQrCodeVisibility"
           >
@@ -41,9 +43,9 @@
         v-if="qrCodeIsVisible"
         class="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
       >
-        <div class="bg-white p-4 rounded-xl shadow-xl relative">
+        <div class="bg-white p-2 md:p-4 rounded-xl shadow-xl relative">
           <button
-            class="absolute top-2 right-2 text-gray-600 hover:text-black"
+            class="cursor-pointer absolute top-2 right-2 text-gray-600 hover:text-black"
             @click="qrCodeIsVisible = false"
           >
             <font-awesome-icon icon="fa-solid fa-xmark" />

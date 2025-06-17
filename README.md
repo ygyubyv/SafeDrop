@@ -9,6 +9,7 @@
 **SafeDrop** is a web application that enables users to securely share files over the internet. Users can upload files, generate download links with limited access, and rely on automatic file deletion after a defined time or usage limit.
 
 ### Key Features:
+
 - Upload single or multiple files with automatic archiving;
 - Generate unique download links;
 - Limit the number of allowed downloads;
@@ -21,14 +22,15 @@
 ## 🧰 Technologies Used
 
 ### Frontend
+
 - **Vue 3 (Composition API)**
 - **TypeScript**
 - **Tailwind CSS**
-- **PrimeVue**
 - **Azure AD B2C + MSAL.js**
 
 ### Backend
-- **Azure Functions (Serverless)**
+
+- **Azure Functions (Serverless) + TypeScript**
 - **Timer Trigger**
 - **Cosmos DB Trigger**
 - **Azure Blob Storage**
@@ -42,11 +44,12 @@
   - Automatic CI/CD with GitHub integration
   - Unified environment for frontend and serverless backend
 - **GitHub Actions**:
+
   - Builds, deploys, and manages application lifecycle
 
   - Збірка, розгортання, управління середовищем
+
 - **Конфігурація через `staticwebapp.config.json`**
 - Підтримка staging та production середовищ
 
 ---
-
