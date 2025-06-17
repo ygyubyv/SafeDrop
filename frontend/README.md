@@ -1,39 +1,16 @@
-# Safe-Drop
+# SafeDrop Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Це фронтенд частина проєкту **SafeDrop**, реалізована на Vue 3 з використанням TypeScript. Призначена для завантаження файлів, які будуть збережені в Azure Blob Storage з TTL, обмеженням доступу та одноразовим завантаженням.
 
-## Recommended IDE Setup
+## ⚙️ Налаштування
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Перед запуском необхідно створити `.env` файл у корені папки `frontend/` зі змінними середовища:
 
-## Type Support for `.vue` Imports in TS
+```env
+VITE_MSAL_CLIENT_ID
+VITE_MSAL_TENANT_ID
+VITE_MSAL_TENANT_NAME
+VITE_MSAL_POLICY_NAME
+VITE_MSAL_REDIRECT_URI
+VITE_BACKEND_API_URL
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
