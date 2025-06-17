@@ -38,6 +38,7 @@ jobs:
       VITE_MSAL_TENANT_NAME: ${{ secrets.VITE_MSAL_TENANT_NAME }}
       VITE_MSAL_POLICY_NAME: ${{ secrets.VITE_MSAL_POLICY_NAME }}
       VITE_BACKEND_API_URL: ${{ secrets.VITE_BACKEND_API_URL }}
+      VITE_MSAL_REDIRECT_URI: ${{ secrets.VITE_MSAL_REDIRECT_URI }}
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

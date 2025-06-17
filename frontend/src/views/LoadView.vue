@@ -58,21 +58,30 @@
         </div>
 
         <button
-          class="sm:hidden px-3 py-1.5 bg-black text-white rounded-md cursor-pointer"
+          class="sm:hidden px-3 py-1.5 bg-black text-white rounded-md"
+          :class="downloadingFile ? 'cursor-not-allowed' : 'cursor-pointer'"
+          :disabled="downloadingFile"
           @click="downloadFile"
         >
           <font-awesome-icon icon="download" />
         </button>
 
         <button
-          class="hidden sm:block px-3 py-1.5 md:px-6 md:py-2 bg-black text-white rounded-md hover:scale-105 transition-transform cursor-pointer"
+          class="hidden sm:block px-3 py-1.5 md:px-6 md:py-2 bg-black text-white rounded-md hover:scale-105 transition-transform"
+          :class="downloadingFile ? 'cursor-not-allowed' : 'cursor-pointer'"
+          :disabled="downloadingFile"
           @click="downloadFile"
         >
           Завантажити файл
         </button>
       </div>
-
       <!-- Блок даних про файл кінець -->
+
+      <!-- Спінер під час завантаження файлу -->
+      <div class="flex justify-center scale-80 sm:scale-100" v-if="downloadingFile">
+        <base-spinner mode="White-spinner" />
+      </div>
+      <!-- Спінер під час завантаження файлу -->
 
       <!-- Блок помилки початок -->
       <div
@@ -103,7 +112,11 @@
 
       <!-- Блок помилки кінець -->
 
-      <base-spinner mode="White-spinner" v-if="isLoading" />
+      <!-- Спінер під час завантаження метаданих -->
+      <div class="flex justify-center scale-80 sm:scale-100" v-if="isLoading">
+        <base-spinner mode="White-spinner" />
+      </div>
+      <!-- Спінер під час завантаження метаданих -->
     </div>
   </div>
 </template>
@@ -125,6 +138,7 @@ const route = useRoute();
 const fileId = route.params.id as string;
 
 const isLoading = ref(false);
+const downloadingFile = ref(false);
 const isError = ref(false);
 
 const file = reactive<FileMetadata>({
@@ -162,6 +176,8 @@ const loadFileMetadata = async (fileId: string) => {
 
 const downloadFile = async () => {
   try {
+    downloadingFile.value = true;
+
     const sasUrl = await downloadSasToken(file.fileName);
     const blob = await downloadBlob(sasUrl);
 
@@ -181,6 +197,8 @@ const downloadFile = async () => {
       "Не вдалося завантажити файл, можливо спроби для завантаження уже закінчились!"
     );
     console.error("Download failed:", error);
+  } finally {
+    downloadingFile.value = false;
   }
 };
 

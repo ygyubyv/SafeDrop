@@ -1,3 +1,4 @@
+а взагалі можна якось на помилки покращити, раніше я мав файл рідер і там було зрозуміліше:
 <template>
   <div class="w-full bg-neutral-800 rounded-xl shadow-md p-6 flex flex-col gap-4">
     <div class="flex flex-col sm:flex-row items-center justify-between">
@@ -15,7 +16,7 @@
         >
           Вибрати файл
         </label>
-        <input id="fileInput" type="file" class="hidden" @change="loadFile" />
+        <input id="fileInput" type="file" class="hidden" multiple @change="loadFile" />
 
         <select
           class="px-2.5 py-1.5 md:px-3 md:py-2 rounded-lg bg-neutral-700 text-white focus:outline-none border-0 flex-shrink-0 cursor-pointer"
@@ -31,14 +32,18 @@
     </div>
 
     <!-- Блок з назвою файлу і розміром початок -->
-    <div
-      class="bg-white text-black text-md rounded-xl p-3.75 md:p-5 flex justify-between items-center shadow-md border border-gray-200"
-      v-if="fileName"
-    >
-      <h2 class="truncate w-1/2 sm:max-w-full text-sm sm:text-base" title="Назва файлу">
-        {{ fileName }}
-      </h2>
-      <p v-if="fileSize" class="text-sm sm:text-base">Розмір: {{ formatFileSize(fileSize) }}</p>
+    <div class="flex flex-col gap-3 max-h-64 md:max-h-128 overflow-y-auto" v-if="files.length">
+      <div
+        class="bg-white text-black text-md rounded-xl p-3.75 md:p-5 flex justify-between items-center shadow-md border border-gray-200"
+        v-for="file in files"
+      >
+        <h2 class="truncate w-1/2 sm:max-w-full text-sm sm:text-base" title="Назва файлу">
+          {{ file.fileName }}
+        </h2>
+        <p v-if="file.fileSize" class="text-sm sm:text-base">
+          Розмір: {{ formatFileSize(file.fileSize) }}
+        </p>
+      </div>
     </div>
     <!-- Блок з назвою файлу і розміром кінець -->
 
@@ -56,63 +61,76 @@ import { useRouter } from "vue-router";
 import { useTTL } from "@/composables/useTTL";
 import { showNotification } from "../helpers/showNotification";
 import { uploadSasToken, uploadBlob, formatFileSize } from "../helpers/filesHelpers";
+import type { UserFile } from "@/types/UserFile";
 import BaseSpinner from "./ui/BaseSpinner.vue";
+import JSZip from "jszip";
 
 const router = useRouter();
 const { fileTTL, TTL } = useTTL();
 
-const fileName = ref("");
-const fileSize = ref<number | null>(null);
+const files = ref<UserFile[]>([]);
 const isLoading = ref(false);
 
-const loadFile = (event: Event): void => {
+const loadFile = async (event: Event): Promise<void> => {
   const input = event.target as HTMLInputElement;
 
   if (!input.files || !input.files.length) {
     return;
   }
 
-  const file = input.files[0];
-  const MAX_FILE_SIZE = 1 * 1024 * 1024 * 1024;
+  const MAX_FILES_SIZE = 1 * 1024 * 1024 * 1024;
+  const currentFilesSize = Array.from(input.files).reduce(
+    (accumulator, currentFile) => accumulator + currentFile.size,
+    0
+  );
 
-  if (file.size > MAX_FILE_SIZE) {
+  if (currentFilesSize > MAX_FILES_SIZE) {
+    showNotification("error", "Розмір файлів перевищує ліміт");
     return;
   }
 
-  fileName.value = file.name;
-  fileSize.value = file.size;
+  const zip = new JSZip();
+
   isLoading.value = true;
 
-  const reader = new FileReader();
+  for (const file of input.files) {
+    try {
+      const buffer = await file.arrayBuffer();
 
-  reader.readAsDataURL(file);
+      zip.file(file.name, buffer);
 
-  reader.onload = async () => {
-    if (!reader.result) {
-      showNotification("error", "Неможливо прочитати цей файл");
-      return;
+      files.value.push({
+        fileName: file.name,
+        fileSize: file.size,
+      });
+    } catch (error) {
+      showNotification("error", `Помилка читання: ${file.name}`);
+      console.error("Read error", file.name, error);
     }
+  }
 
-    const data = await uploadSasToken(fileName.value, TTL.value, file.size);
+  let blob: Blob;
 
-    if (!data) {
-      return;
-    }
+  try {
+    blob = await zip.generateAsync({ type: "blob" });
+  } catch (zipError) {
+    showNotification("error", "Помилка створення архіву");
+    console.error("ZIP error", zipError);
+    return;
+  }
 
-    const { url, id } = data;
-    await uploadBlob(url, file);
+  const data = await uploadSasToken("Files", TTL.value, currentFilesSize);
+  if (!data) {
+    return;
+  }
 
-    showNotification("success", "Успішно завантажено!");
+  const { url, id } = data;
+  await uploadBlob(url, blob);
 
-    router.replace({ name: "link", params: { path: id } });
+  showNotification("success", "Успішно завантажено!");
 
-    isLoading.value = false;
-  };
+  router.replace({ name: "link", params: { path: id } });
 
-  reader.onerror = () => {
-    showNotification("error", `Помилка читання файлу`);
-    isLoading.value = false;
-    console.error(reader.error);
-  };
+  isLoading.value = false;
 };
 </script>

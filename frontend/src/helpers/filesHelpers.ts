@@ -40,7 +40,7 @@ export const downloadSasToken = async (fileName: string) => {
   }
 };
 
-export const uploadBlob = async (url: string, file: File) => {
+export const uploadBlob = async (url: string, file: File | Blob) => {
   try {
     const response = await fetch(url, {
       method: "PUT",

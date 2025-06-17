@@ -12,12 +12,13 @@
         </p>
         <ul class="list-disc list-inside mb-2 md:mb-4 text-sm space-y-2 text-gray-300">
           <li>
-            Максимальний розмір одного файлу — <span class="font-semibold text-white">1GB</span>
+            Сумарний розмір усіх файлів не має перевищувати
+            <span class="font-semibold text-white">1GB</span>
           </li>
           <li>Передача даних зашифрована (HTTPS)</li>
           <li>Файли тимчасово зберігаються у хмарі Microsoft Azure</li>
           <li>
-            Кожен файл можна <span class="font-semibold text-white">завантажити лише один раз</span>
+            Файл можна <span class="font-semibold text-white">завантажити лише один раз</span>
           </li>
           <li>
             Максимальний час зберігання — <span class="font-semibold text-white">168 годин</span>
