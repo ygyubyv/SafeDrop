@@ -4,6 +4,8 @@
 
 ---
 
+> 🔗 [Live Demo](https://lively-hill-0ca930403.6.azurestaticapps.net/)
+
 ## 🔍 Overview
 
 **SafeDrop** is a web application that enables users to securely share files over the internet. Users can upload files, generate download links with limited access, and rely on automatic file deletion after a defined time or usage limit.
